@@ -23,8 +23,8 @@ namespace Lab10_SQL_ORM
 
             int listLength = menuOptions.Count();
 
-            // if more than 12 rows, use multiple pages
-            int maxRowsPerPage = 12;
+            // if more than 15 rows, use multiple pages
+            int maxRowsPerPage = 15;
             int maxOptionsPerPage = (int)Math.Floor((double)maxRowsPerPage / nrOfRowsPerOption);
             int numberOfPages = (int)(Math.Ceiling((double)listLength / maxOptionsPerPage));
             IEnumerable<string> partialMenuOptions;

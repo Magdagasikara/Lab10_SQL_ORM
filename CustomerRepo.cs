@@ -49,7 +49,7 @@ namespace Lab10_SQL_ORM
             foreach (var customer in customersWithOrders)
             {
                 //info.Add($"Company: {customer.CompanyName} | Country: {customer.Country} | Region: {customer.Region} | Phone: {customer.Phone} | Number of orders: {customer.OrderAmount}");
-                info.Add($"Company: {customer.CompanyName}\nCountry: {customer.Country} | Region: {customer.Region} | Phone: {customer.Phone}\nNumber of orders: {customer.OrderAmount}");
+                info.Add($"Company: {customer.CompanyName}\n\tCountry: {customer.Country} | Region: {customer.Region} | Phone: {customer.Phone}\n\tNumber of orders: {customer.OrderAmount}");
             }
 
             return info;
@@ -194,7 +194,7 @@ namespace Lab10_SQL_ORM
             List<Customer> custList = GetAllCustomers();
             List<string> custInfoList = GetInfoOnCustomers(custList);
 
-            string menuTitle = "Use up and down arrows to choose a customer you want to know more about!";
+            string menuTitle = "Use up and down arrows and press Enter to choose a customer you want to know more about!";
             string optionsADX = "Press A to sort the list ascending, press D to sort the list descending\nPress X to escape";
 
             while (true)

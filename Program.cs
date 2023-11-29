@@ -21,14 +21,12 @@ namespace Lab10_SQL_ORM
 
             // next time I will move this intro out of Main
 
-            string menuTitle = "Hi user";
-            string optionsADX = "Press X to escape";
-
+          
             while (true)
             {
                 int choice = 0;
                 string[] menuOptions = ["Show all customers", "Add a customer", "Hejdå!"];
-                choice = Menu.ShowMenu(menuOptions, 1, menuTitle, optionsADX);
+                choice = Menu.ShowMenu(menuOptions, 1, "Hi user, use arrows and press Enter to choose your option", "");
                 switch (choice)
                 {
                     case 0:
@@ -38,7 +36,6 @@ namespace Lab10_SQL_ORM
                         customerRepo.AddCustomer();
                         break;
                     case 2:
-                    case 5: // user pressed X
                         Console.Clear();
                         Console.WriteLine("Time to say goodbye!");
                         return;
