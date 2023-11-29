@@ -8,7 +8,7 @@ namespace Lab10_SQL_ORM
 {
     internal class Menu
     {
-        public static int ShowMenu(IEnumerable<string> menuOptions, string title, string optionAD, string optionX)
+        public static int ShowMenu(IEnumerable<string> menuOptions, string title, string optionsADX)
         {
 
             // menu with options in the list/array
@@ -24,6 +24,8 @@ namespace Lab10_SQL_ORM
             {
                 Console.WriteLine($"   {option}");
             }
+            Console.WriteLine("");
+            Console.WriteLine(optionsADX);
 
             Console.CursorVisible = false;
             int startTop = 1;
@@ -64,6 +66,8 @@ namespace Lab10_SQL_ORM
                 top = startTop + choice;
 
             }
+
+            Console.CursorVisible = true;
         }
     }
 }

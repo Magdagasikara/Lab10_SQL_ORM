@@ -1,12 +1,6 @@
 ﻿using Lab10_SQL_ORM.Data;
 using Lab10_SQL_ORM.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab10_SQL_ORM
 {
@@ -61,7 +55,7 @@ namespace Lab10_SQL_ORM
 
         }
 
-        public void PrintInfoByCustomerId(string customerId)
+        public void PrintInfoByCustomerId(string customerId, string title)
         {
             Console.Clear();
 
@@ -71,7 +65,7 @@ namespace Lab10_SQL_ORM
                 //.ThenInclude(o => o.OrderDetails)
                 .SingleOrDefault();
 
-            Console.WriteLine($"Chosen customer: {chosenCustomer.CompanyName}" +
+            Console.WriteLine($"{title}: {chosenCustomer.CompanyName}" +
                 $"\n\n\tContactName: {chosenCustomer.ContactName}" +
                 $"\n\tContactTitle: {chosenCustomer.ContactTitle}" +
                 $"\n\tAddress: {chosenCustomer.Address}" +
@@ -80,17 +74,108 @@ namespace Lab10_SQL_ORM
                 $"\n\tPostalCode: {chosenCustomer.PostalCode}" +
                 $"\n\tCountry: {chosenCustomer.Country}" +
                 $"\n\tPhone: {chosenCustomer.Phone}" +
-                $"\n\tFax: {chosenCustomer.Fax}" +
-                $"\n\nPlaced orders:");
+                $"\n\tFax: {chosenCustomer.Fax}");
 
-            foreach (var order in chosenCustomer.Orders)
+            if (chosenCustomer.Orders.Count != 0) {
+                Console.WriteLine($"\n\nPlaced orders:");
+                foreach (var order in chosenCustomer.Orders)
+                {
+                    Console.WriteLine($"\tOrder nr {order.OrderId} placed on {order.OrderDate?.ToShortDateString() ?? "(No date!)"}");
+                    //lyckades formatera om OrderDate först med "null-coalescing operator"
+                    // "The null-coalescing operator ?? is used to provide a default value for a nullable type
+                    // or a value that might be null. It's a concise way to handle scenarios where a variable
+                    // might be null, allowing you to specify a default value if the variable is null."
+                }
+            }
+            else
             {
-                Console.WriteLine($"\tOrder nr {order.OrderId} placed on {order.OrderDate}" );
-                //lyckas inte formatera om OrderDate här
+                Console.WriteLine($"\n\t{chosenCustomer.CompanyName} hasn't placed any orders yet.");
             }
 
             Console.WriteLine("");
 
+        }
+
+        public bool AddCustomer()
+        {
+            // massa frågor inga svar 
+            // hur ordnar man sin kod, ska man bara ha anrop till DB här och inte lulllull för att user ska ange saker?
+            // men om det senare, hur ska jag hitta på bra namn, AddCustomer här och FillInInfoAboutNewCustomer eller vadå...
+            // även: för att validera, ha en separat klass för det?
+            Console.Clear();
+            Console.WriteLine("To add a customer please fill in following customer information.\n");
+
+            Console.Write("Company name: ");
+            string companyName;
+            while (true) { 
+                companyName = Console.ReadLine();
+                if (companyName is not null && companyName.Length > 2) 
+                { break;
+                }
+                Console.Write("Company name has to be at least 3 characters long. Try again: ");
+            }
+            Console.Write("Contact name: ");
+            string contactName = Console.ReadLine();
+            Console.Write("Contact title: ");
+            string contactTitle = Console.ReadLine();
+            Console.Write("Address: ");
+            string address = Console.ReadLine();
+            Console.Write("City: ");
+            string city = Console.ReadLine();
+            Console.Write("Region: ");
+            string region = Console.ReadLine();
+            Console.Write("Postal code: ");
+            string postalCode= Console.ReadLine();
+            Console.Write("Country: ");
+            string country = Console.ReadLine();
+            Console.Write("Phone: ");
+            string phone = Console.ReadLine();
+            Console.Write("Fax: ");
+            string fax = Console.ReadLine();
+
+            //random customerID, 5 letters and unique
+            string customerId = "";
+            while (true) { 
+                char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+                Random random = new Random();
+                for (int i=0; i<5; i++) { 
+                    int randomNumber = random.Next(chars.Length);
+                    customerId += chars[randomNumber].ToString();
+                }
+                if (!_context.Customers.Any(c => c.CustomerId == customerId)){
+                    break;
+                }
+            }
+            Customer customer = new Customer()
+            {
+                CustomerId = customerId,
+                CompanyName  = companyName,
+                ContactName = string.IsNullOrEmpty(contactName) ? null : contactName,
+                ContactTitle = string.IsNullOrEmpty(contactTitle) ? null : contactTitle,
+                Address = string.IsNullOrEmpty(address) ? null : address,
+                City = string.IsNullOrEmpty(city) ? null : city,
+                Region = string.IsNullOrEmpty(region) ? null : region,
+                PostalCode = string.IsNullOrEmpty(postalCode) ? null : postalCode,
+                Country = string.IsNullOrEmpty(country) ? null : country,
+                Phone = string.IsNullOrEmpty(phone) ? null : phone,
+                Fax = string.IsNullOrEmpty(fax) ? null : fax,
+            };
+            _context.Customers.Add(customer);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error adding user: {e}");
+                Console.ReadKey();
+                return false;
+            }
+
+
+            PrintInfoByCustomerId(customerId, "Successfully added a new customer");
+            Console.ReadKey();
+            return true;
         }
 
     }
